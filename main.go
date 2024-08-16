@@ -31,6 +31,8 @@ func main() {
 	ip, _ := util.GetWLANIPv4()
 	fmt.Printf("Server is running on http://%s:8080\n", ip)
 
+	util.OpenBrowser("http://" + ip + ":8080")
+	// 这个函数会阻塞，持续运行直到发生错误或者程序退出
 	log.Fatal(http.ListenAndServe("0.0.0.0:8080", nil))
 }
 

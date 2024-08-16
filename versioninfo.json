@@ -19,17 +19,17 @@
         "FileSubType": "00"
     },
     "StringFileInfo": {
-    "Comments": "局域网文件服务器",
+    "Comments": "FileServerD-局域网文件服务器",
         "CompanyName": "SJTU",
         "FileDescription": "局域网文件服务器",
-        "FileVersion": "v1.0.11405.42038",
-        "InternalName": "SJTU",
-        "LegalCopyright": "Copyright (c) 2013-2024 Intel Corporation All rights reserved.",
+        "FileVersion": "v1.0.0.1",
+        "InternalName": "FileServerD",
+        "LegalCopyright": "Copyright (c) 2024-2025 by chuanleiD Corporation All rights reserved.",
         "LegalTrademarks": "",
-        "OriginalFilename": "SJTU",
+        "OriginalFilename": "",
         "PrivateBuild": "",
         "ProductName": "FileServerD",
-        "ProductVersion": "v1.0.11405.42038",
+        "ProductVersion": "v1.0.0.1",
         "SpecialBuild": ""
     },
     "VarFileInfo": {
