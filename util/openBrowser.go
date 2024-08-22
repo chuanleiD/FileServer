@@ -7,7 +7,7 @@ import (
 )
 
 func OpenBrowser(url string) error {
-	time.Sleep(500 * time.Millisecond)
+	time.Sleep(800 * time.Millisecond)
 	var cmd string
 	var args []string
 

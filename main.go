@@ -4,6 +4,7 @@ package main
 import (
 	"FileServer/util"
 	"crypto/subtle"
+	"crypto/tls"
 	"fmt"
 	"html/template"
 	"io"
@@ -13,10 +14,12 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 )
 
 const contentDir = "./content"
 const uploadDir = "./upload"
+const listenPort = "18080"
 
 var users = map[string]string{
 	"admin": "admin",
@@ -24,16 +27,39 @@ var users = map[string]string{
 }
 
 func main() {
-	http.HandleFunc("/login", loginHandler)
-	http.HandleFunc("/", authMiddleware(listFiles))
-	http.HandleFunc("/content/", authMiddleware(serveFile))
+	// 创建HTTP服务器
+	mux := http.NewServeMux()
+	mux.HandleFunc("/login", loginHandler)
+	mux.HandleFunc("/", authMiddleware(listFiles))
+	mux.HandleFunc("/content/", authMiddleware(serveFile))
+
+	// 配置HTTPS服务器
+	server := &http.Server{
+		Addr:         ":" + listenPort,
+		Handler:      mux,
+		ReadTimeout:  10 * time.Second,
+		WriteTimeout: 10 * time.Second,
+		TLSConfig: &tls.Config{
+			MinVersion: tls.VersionTLS13, // 设置最低支持的TLS版本为TLS 1.3
+			MaxVersion: tls.VersionTLS13, // 设置最高支持的TLS版本为TLS 1.3
+		},
+	}
 
 	ip, _ := util.GetWLANIPv4()
-	fmt.Printf("Server is running on http://%s:8080\n", ip)
+	fmt.Printf("Server is running on https://%s:%s\n", ip, listenPort)
 
-	util.OpenBrowser("http://" + ip + ":8080")
-	// 这个函数会阻塞，持续运行直到发生错误或者程序退出
-	log.Fatal(http.ListenAndServe("0.0.0.0:8080", nil))
+	err := util.OpenBrowser("https://" + ip + ":" + listenPort)
+	if err != nil {
+		return
+	}
+
+	// 启动HTTPS服务器
+	certFile, certFileKey := filepath.Join("config", "server.crt"), filepath.Join("config", "server.key")
+	err = server.ListenAndServeTLS(certFile, certFileKey)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return
 }
 
 func loginHandler(w http.ResponseWriter, r *http.Request) {
